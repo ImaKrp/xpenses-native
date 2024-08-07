@@ -1,8 +1,10 @@
 import db from "./SQLiteDB";
 import { categories } from "../utils/categories";
 
+// db.execSync("DROP TABLE categories;");
+
 db.execSync(`
-  CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, icon TEXT, icon_type TEXT, color TEXT, type TEXT);
+  PRAGMA foreign_keys = ON;CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, icon TEXT, icon_type TEXT, color TEXT, type TEXT);
 `);
 
 categories.forEach(({ name, icon, icon_type, color }) => {

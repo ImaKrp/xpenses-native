@@ -5,7 +5,10 @@ import {
   CardStyleInterpolators,
 } from "@react-navigation/stack";
 const { Navigator, Screen } = createStackNavigator();
-import { View } from "react-native";
+import Categories from "../pages/Categories";
+import Calculator from "../pages/Calculator";
+import Profile from "../pages/Profile";
+import Form from "../pages/Form";
 import Layout from "../layout";
 
 export function Routes() {
@@ -19,9 +22,34 @@ export function Routes() {
           navigationBarColor: "gold",
         }}
       >
-        <Screen name="Profile" component={Layout} />
-        <Screen name="Categories" component={Layout} />
-        <Screen name="Calculator" component={Layout} />
+        <Screen name="Profile">
+          {(props) => (
+            <Layout {...props}>
+              <Profile {...props} />
+            </Layout>
+          )}
+        </Screen>
+        <Screen name="Categories">
+          {(props) => (
+            <Layout {...props}>
+              <Categories {...props} />
+            </Layout>
+          )}
+        </Screen>
+        <Screen name="Form">
+          {(props) => (
+            <Layout {...props}>
+              <Form {...props} />
+            </Layout>
+          )}
+        </Screen>
+        <Screen name="Calculator">
+          {(props) => (
+            <Layout {...props}>
+              <Calculator {...props} />
+            </Layout>
+          )}
+        </Screen>
       </Navigator>
     </NavigationContainer>
   );

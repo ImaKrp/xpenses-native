@@ -1,8 +1,10 @@
 import db from "./SQLiteDB";
 import { categories } from "../utils/categories";
 
+// db.execSync("DROP TABLE users;");
+
 db.execSync(
-  "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, image_path TEXT);"
+  "PRAGMA foreign_keys = ON;CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, image_path TEXT);"
 );
 
 const create = async (data) => {

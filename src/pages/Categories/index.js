@@ -102,7 +102,7 @@ const Categories = ({ navigation }) => {
                     <ItemIcon>
                       <CategoryColor color={category?.color}>
                         <IconStore
-                          size={22}
+                          size={20}
                           color="#fafafa"
                           family={category?.icon_type}
                           icon={category?.icon}
@@ -147,7 +147,7 @@ const Categories = ({ navigation }) => {
                   <ItemIcon>
                     <CategoryColor color={category?.color}>
                       <IconStore
-                        size={22}
+                        size={20}
                         color="#fafafa"
                         family={category?.icon_type}
                         icon={category?.icon}
@@ -167,7 +167,7 @@ const Categories = ({ navigation }) => {
       </Scroll>
       <BottomDrawer
         ref={bottomDrawerRef}
-        snapPoints={[480]}
+        snapPoints={[481]}
         enableSnapping
         customStyles={{
           container: {

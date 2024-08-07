@@ -15,6 +15,7 @@ import {
   ValueText,
 } from "./styles";
 import { Dimensions } from "react-native";
+import useTransactionFormStore from "../../store";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -31,10 +32,12 @@ const colors_by_types = {
   receita: "#03DAC6",
 };
 
-const type = "despesa";
+const Calculator = ({ navigation, route }) => {
+  const type = useTransactionFormStore((state) => state.type);
+  const value = useTransactionFormStore((state) => state.value);
+  const setValue = useTransactionFormStore((state) => state.setValue);
 
-const Calculator = ({ navigation }) => {
-  const [input, setInput] = useState("0");
+  const [input, setInput] = useState(String(value) ?? "0");
 
   const result = useMemo(() => {
     let current_operation = input.replaceAll("÷", "/");
@@ -266,7 +269,15 @@ const Calculator = ({ navigation }) => {
           >
             <ButtonText>=</ButtonText>
           </Button>
-          <Button height={areaSize} width={areaSize} color="#0B8C80">
+          <Button
+            height={areaSize}
+            width={areaSize}
+            color="#0B8C80"
+            onPress={() => {
+              setValue(Number(result));
+              navigation.goBack();
+            }}
+          >
             <Feather name="check" size={40} color="#fafafa" />
           </Button>
         </Row>
