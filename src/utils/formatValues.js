@@ -1,3 +1,4 @@
 export const formatMoneyValue = (value) => {
-  return value.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+  if (!value) return "0,00";
+  return value?.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 };

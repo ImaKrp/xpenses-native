@@ -20,7 +20,7 @@ import {
 } from "./styles";
 import { TouchableOpacity, ScrollView, View } from "react-native";
 import Constants from "expo-constants";
-import useTransactionFormStore from "../../store";
+import useTransactionFormStore from "../../store/transactions";
 const { statusBarHeight } = Constants;
 import Input from "../../components/Input";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -51,6 +51,23 @@ const Form = ({ navigation, route }) => {
   useEffect(() => {
     setType(route?.params?.type ?? "receita");
     setValue(route?.params?.value ?? 0);
+
+    if (route?.params?.id) {
+      const { category_id, color, icon, icon_type } = route?.params;
+      const { date, frequency, id, name, title } = route?.params;
+      const category = { id: category_id, color, icon, icon_type };
+
+      let newData = {
+        category,
+        date,
+        frequency,
+        id,
+        name,
+        title,
+        dateType: "picker",
+      };
+      setData(newData);
+    }
   }, [route]);
 
   const handleChangeValue = (text) => {
@@ -128,12 +145,29 @@ const Form = ({ navigation, route }) => {
   const handleSubmit = () => {
     if (isDisabled()) return;
 
+    if (route?.params?.id) {
+      console.log("trying");
+      transactionsDB.update({
+        title: data?.title,
+        category_id: data?.category?.id,
+        value,
+        date: data?.date,
+        type,
+        frequency: data?.frequency,
+        id: data?.id,
+      });
+      resetForm();
+      navigation.goBack();
+      return;
+    }
+
     transactionsDB.create({
       title: data?.title,
       category_id: data?.category?.id,
       value,
       date: data?.date,
       type,
+      frequency: data?.frequency,
     });
 
     if (data?.frequency === "recurrent") {
@@ -154,6 +188,7 @@ const Form = ({ navigation, route }) => {
           value,
           date: loopDate?.getTime(),
           type,
+          frequency: data?.frequency,
         });
       }
 
@@ -163,6 +198,7 @@ const Form = ({ navigation, route }) => {
         value,
         date: data?.recurrent_to,
         type,
+        frequency: data?.frequency,
       });
     }
 
@@ -198,9 +234,17 @@ const Form = ({ navigation, route }) => {
               </ToggleTypeText>
             </ToggleType>
             <ViewButtons>
-              {/* <TouchableOpacity>
-                <ToggleTypeText color="#fafafa">deletar</ToggleTypeText>
-              </TouchableOpacity> */}
+              {route?.params?.id && (
+                <TouchableOpacity
+                  onPress={() => {
+                    transactionsDB.deleteTransaction(route?.params?.id);
+                    resetForm();
+                    navigation.goBack();
+                  }}
+                >
+                  <ToggleTypeText color="#fafafa">deletar</ToggleTypeText>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack();
@@ -270,32 +314,34 @@ const Form = ({ navigation, route }) => {
               <Label>categoria</Label>
               <Picker setValue={handleCategory} value={data?.category} />
             </View>
-            <View>
-              <Label>lançamento</Label>
-              <ScrollView horizontal={true}>
-                <DatePickerValue
-                  active={data?.frequency === "unique"}
-                  onPress={() => handleSelectedFrequency("unique")}
-                >
-                  <DatePickerTextValue>único</DatePickerTextValue>
-                </DatePickerValue>
-                <DatePickerValue
-                  ml={12}
-                  active={data?.frequency === "recurrent"}
-                  onPress={() => setOpenDatePicker("frequency")}
-                >
-                  <DatePickerTextValue>
-                    recorrente
-                    {data?.recurrent_to &&
-                      data?.frequency === "recurrent" &&
-                      " até " +
-                        new Date(data?.recurrent_to).toLocaleDateString(
-                          "pt-BR"
-                        )}
-                  </DatePickerTextValue>
-                </DatePickerValue>
-              </ScrollView>
-            </View>
+            {!route?.params?.id && (
+              <View>
+                <Label>lançamento</Label>
+                <ScrollView horizontal={true}>
+                  <DatePickerValue
+                    active={data?.frequency === "unique"}
+                    onPress={() => handleSelectedFrequency("unique")}
+                  >
+                    <DatePickerTextValue>único</DatePickerTextValue>
+                  </DatePickerValue>
+                  <DatePickerValue
+                    ml={12}
+                    active={data?.frequency === "recurrent"}
+                    onPress={() => setOpenDatePicker("frequency")}
+                  >
+                    <DatePickerTextValue>
+                      recorrente
+                      {data?.recurrent_to &&
+                        data?.frequency === "recurrent" &&
+                        " até " +
+                          new Date(data?.recurrent_to).toLocaleDateString(
+                            "pt-BR"
+                          )}
+                    </DatePickerTextValue>
+                  </DatePickerValue>
+                </ScrollView>
+              </View>
+            )}
             <SubmitButton onPress={handleSubmit} disabled={isDisabled()}>
               <SubmitText>salvar</SubmitText>
             </SubmitButton>

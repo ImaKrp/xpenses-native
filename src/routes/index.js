@@ -9,6 +9,7 @@ import Categories from "../pages/Categories";
 import Calculator from "../pages/Calculator";
 import Profile from "../pages/Profile";
 import Form from "../pages/Form";
+import List from "../pages/List";
 import Layout from "../layout";
 
 export function Routes() {
@@ -22,6 +23,13 @@ export function Routes() {
           navigationBarColor: "gold",
         }}
       >
+        <Screen name="List">
+          {(props) => (
+            <Layout {...props}>
+              <List {...props} />
+            </Layout>
+          )}
+        </Screen>
         <Screen name="Profile">
           {(props) => (
             <Layout {...props}>

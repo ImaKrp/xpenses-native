@@ -9,7 +9,7 @@ export const Wrapper = styled.View`
 `;
 
 export const HeaderWrapper = styled.View`
-  padding: 6px 0 32px;
+  padding: 6px 12px 22px;
   flex-direction: row;
   align-items: center;
 `;

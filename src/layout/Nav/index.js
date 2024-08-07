@@ -34,7 +34,7 @@ const Nav = ({ navigation, route }) => {
       <NewTransactionButton onPress={handleOpenForm}>
         <IconStore icon="plus" family="Entypo" color="#fafafa" size={32} />
       </NewTransactionButton>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("List")}>
         <IconStore
           icon="list"
           family="MaterialIcons"

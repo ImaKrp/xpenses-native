@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 export const Wrapper = styled.View`
   flex: 1;
   align-items: center;
+  padding: 12px;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`

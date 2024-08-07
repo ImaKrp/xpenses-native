@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import usersDB from "../../database/Users";
-import transactionsDB from "../../database/Transactions";
 import Input from "../../components/Input";
 import { View } from "react-native";
 import * as FileSystem from "expo-file-system";
@@ -35,24 +34,6 @@ const Profile = () => {
     React.useCallback(() => {
       const fetch = async () => {
         const res = await usersDB.find();
-
-        const transactions = await transactionsDB.listAll({
-          date: [1722565345465, 1725157345465],
-        });
-
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-
-        transactions.forEach((transaction) =>
-          console.log({
-            ...transaction,
-            date: new Date(transaction?.date)?.toLocaleDateString("pt-BR"),
-          })
-        );
 
         if (res) setName(res?.name);
         if (res) setImage(res?.image_path);

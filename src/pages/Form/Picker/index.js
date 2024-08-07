@@ -27,7 +27,7 @@ const Picker = ({ setValue, value }) => {
           if (b?.name === "outros" && b?.type == "default") return -1;
           return a?.name.localeCompare(b?.name);
         })}
-        defaultValue={value}
+        defaultValueByIndex={categories?.findIndex((i) => i?.id === value?.id)}
         onSelect={setValue}
         renderButton={(selectedItem, isOpen) => {
           return (

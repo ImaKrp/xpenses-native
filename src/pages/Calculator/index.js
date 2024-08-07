@@ -15,7 +15,7 @@ import {
   ValueText,
 } from "./styles";
 import { Dimensions } from "react-native";
-import useTransactionFormStore from "../../store";
+import useTransactionFormStore from "../../store/transactions";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
