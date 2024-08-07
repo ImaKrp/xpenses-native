@@ -2,7 +2,7 @@
   "expo": {
     "name": "XPENSES",
     "slug": "XPENSES",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -21,7 +21,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#191919"
-      }
+      },
+      "permissions": ["android.permission.RECORD_AUDIO"],
+      "package": "com.imakreep.XPENSES"
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",
@@ -39,6 +41,11 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "680954fe-bebd-40ab-8966-58dc56077baa"
+      }
+    }
   }
 }

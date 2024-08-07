@@ -36,6 +36,12 @@ export const categories = [
     color: "#37B5AD",
   },
   {
+    name: "saldo",
+    icon: "piggy-bank-outline",
+    icon_type: "MaterialCommunityIcons",
+    color: "#5837B5",
+  },
+  {
     name: "outros",
     icon: "dots-horizontal",
     icon_type: "MaterialCommunityIcons",
