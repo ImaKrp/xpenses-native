@@ -85,8 +85,8 @@ export const icons = [
     icon_type: "MaterialIcons",
   },
   {
-    icon: "table-restaurant",
-    icon_type: "MaterialIcons",
+    icon: "tooth",
+    icon_type: "MaterialCommunityIcons",
   },
   {
     icon: "camera",
@@ -113,8 +113,8 @@ export const icons = [
     icon_type: "FontAwesome5",
   },
   {
-    icon: "map-marked-alt",
-    icon_type: "FontAwesome5",
+    icon: "gift-sharp",
+    icon_type: "Ionicons",
   },
   {
     icon: "money-bills",
@@ -133,16 +133,16 @@ export const icons = [
     icon_type: "Entypo",
   },
   {
-    icon: "laptop",
-    icon_type: "Entypo",
+    icon: "basket",
+    icon_type: "MaterialCommunityIcons",
   },
   {
     icon: "mobile",
     icon_type: "Entypo",
   },
   {
-    icon: "hotel",
-    icon_type: "FontAwesome",
+    icon: "account-group",
+    icon_type: "MaterialCommunityIcons",
   },
   {
     icon: "id-card",

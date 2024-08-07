@@ -140,26 +140,32 @@ const Categories = ({ navigation }) => {
         </TextTitle>
         <List mb={12}>
           {defaultCategories && defaultCategories?.length > 0 ? (
-            defaultCategories?.map((category, i) => (
-              <ListItem key={category?.name}>
-                {i > 0 && <DivisorLine />}
-                <ItemInfos>
-                  <ItemIcon>
-                    <CategoryColor color={category?.color}>
-                      <IconStore
-                        size={20}
-                        color="#fafafa"
-                        family={category?.icon_type}
-                        icon={category?.icon}
-                      />
-                    </CategoryColor>
-                    <ItemTitle>
-                      <Bold>{category?.name}</Bold>
-                    </ItemTitle>
-                  </ItemIcon>
-                </ItemInfos>
-              </ListItem>
-            ))
+            defaultCategories
+              ?.sort((a, b) => {
+                if (a?.name === "outros" && a?.type == "default") return 1;
+                if (b?.name === "outros" && b?.type == "default") return -1;
+                return a?.name.localeCompare(b?.name);
+              })
+              ?.map((category, i) => (
+                <ListItem key={category?.name}>
+                  {i > 0 && <DivisorLine />}
+                  <ItemInfos>
+                    <ItemIcon>
+                      <CategoryColor color={category?.color}>
+                        <IconStore
+                          size={20}
+                          color="#fafafa"
+                          family={category?.icon_type}
+                          icon={category?.icon}
+                        />
+                      </CategoryColor>
+                      <ItemTitle>
+                        <Bold>{category?.name}</Bold>
+                      </ItemTitle>
+                    </ItemIcon>
+                  </ItemInfos>
+                </ListItem>
+              ))
           ) : (
             <ActivityIndicator color="#9474ee" />
           )}

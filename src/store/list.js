@@ -22,7 +22,9 @@ const getStartOfCurrMonth = () => {
 const useListStore = create((set) => ({
   filter_date: dateToFilter(new Date()),
   date: getStartOfCurrMonth(),
+  visibility: false,
 
+  toggleVisibility: (visibility) => set({ visibility: !visibility }),
   setFilter: (filter) => set({ filter }),
   setDate: (date) => set({ date, filter_date: dateToFilter(date) }),
 }));

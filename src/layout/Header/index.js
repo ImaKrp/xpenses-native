@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   HeaderWrapper,
   Menu,
@@ -14,6 +14,7 @@ import {
   DrawerBlockText,
 } from "./styles";
 import IconStore from "../../components/IconStore";
+import { useFocusEffect } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
 import usersDB from "../../database/Users";
 import BottomDrawer from "react-native-animated-bottom-drawer";
@@ -33,13 +34,15 @@ const Header = ({ route, navigation }) => {
     if (bottomDrawerRef?.current) bottomDrawerRef.current.close();
   }, [bottomDrawerRef]);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await usersDB.find();
-      setUser(res);
-    };
-    fetch();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetch = async () => {
+        const res = await usersDB.find();
+        setUser(res);
+      };
+      fetch();
+    }, [])
+  );
   return (
     <>
       <HeaderWrapper>

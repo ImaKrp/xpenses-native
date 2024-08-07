@@ -26,7 +26,7 @@ export const Row = styled.View`
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: ${({ mb }) => `${mb}px`};
-  gap: 10px;
+  gap: 18px;
   padding: ${({ pd }) => `${pd ?? 0}px`};
 `;
 

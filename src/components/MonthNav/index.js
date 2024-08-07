@@ -4,7 +4,7 @@ import IconStore from "../IconStore";
 import useListStore from "../../store/list";
 import { Wrapper, Filler, PressableTexts } from "./styles";
 
-const MonthNav = ({ margin }) => {
+const MonthNav = ({ margin, onChange }) => {
   const date = useListStore((state) => state.date);
   const setDate = useListStore((state) => state.setDate);
 
@@ -37,7 +37,9 @@ const MonthNav = ({ margin }) => {
 
   return (
     <Wrapper margin={margin}>
-      <TouchableOpacity onPress={handlePrev}>
+      <TouchableOpacity
+        onPress={onChange ? () => onChange(handlePrev) : handlePrev}
+      >
         <IconStore
           color="#D0D0D0"
           family="MaterialCommunityIcons"
@@ -46,15 +48,21 @@ const MonthNav = ({ margin }) => {
         />
       </TouchableOpacity>
       <Filler>
-        <TouchableOpacity onPress={handlePrev}>
+        <TouchableOpacity
+          onPress={onChange ? () => onChange(handlePrev) : handlePrev}
+        >
           <PressableTexts>{getRelationName("prev")}</PressableTexts>
         </TouchableOpacity>
         <PressableTexts active>{getRelationName("current")}</PressableTexts>
-        <TouchableOpacity onPress={handleNext}>
+        <TouchableOpacity
+          onPress={onChange ? () => onChange(handleNext) : handleNext}
+        >
           <PressableTexts>{getRelationName("next")}</PressableTexts>
         </TouchableOpacity>
       </Filler>
-      <TouchableOpacity onPress={handleNext}>
+      <TouchableOpacity
+        onPress={onChange ? () => onChange(handleNext) : handleNext}
+      >
         <IconStore
           color="#D0D0D0"
           family="MaterialCommunityIcons"

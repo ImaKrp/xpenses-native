@@ -35,10 +35,10 @@ const colors_by_types = {
 const List = ({ navigation }) => {
   const date = useListStore((state) => state.date);
   const filter_date = useListStore((state) => state.filter_date);
+  const visibility = useListStore((state) => state.visibility);
+  const toggleVisibility = useListStore((state) => state.toggleVisibility);
   const [transactions, setTransactions] = useState([]);
   const [nextTransactions, setNextTransactions] = useState([]);
-
-  const [visible, setVisible] = useState(false);
 
   const [loading, setLoading] = useState([]);
 
@@ -109,7 +109,7 @@ const List = ({ navigation }) => {
   const projected = balance + (nextMonth?.receita - nextMonth?.despesa);
 
   const showValue = (value) => {
-    if (!visible) return "***";
+    if (!visibility) return "***";
     if (loading) return "-";
     return formatMoneyValue(value);
   };
@@ -144,7 +144,7 @@ const List = ({ navigation }) => {
             <View>
               <SubTitle>saldo atual</SubTitle>
               <TextTitle>
-                <Bold color={visible && balance < 0 ? "#E5405E" : "#fafafa"}>
+                <Bold color={visibility && balance < 0 ? "#E5405E" : "#fafafa"}>
                   R$ {showValue(balance)}
                 </Bold>
               </TextTitle>
@@ -157,13 +157,13 @@ const List = ({ navigation }) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => setVisible(!visible)}
+            onPress={() => toggleVisibility(visibility)}
           >
             <IconStore
               size={24}
               color="#fafafa"
               family="Ionicons"
-              icon={visible ? "eye-outline" : "eye-off-outline"}
+              icon={visibility ? "eye-outline" : "eye-off-outline"}
             />
           </TouchableOpacity>
         </BalanceCard>
@@ -288,7 +288,9 @@ const List = ({ navigation }) => {
               <View>
                 <SubTitle>projetado</SubTitle>
                 <TextTitle>
-                  <Bold color={visible && balance < 0 ? "#E5405E" : "#fafafa"}>
+                  <Bold
+                    color={visibility && projected < 0 ? "#E5405E" : "#fafafa"}
+                  >
                     R$ {showValue(projected)}
                   </Bold>
                 </TextTitle>
@@ -359,7 +361,9 @@ const List = ({ navigation }) => {
                         >
                           <CardBoldText color={colors_by_types?.[value?.type]}>
                             R${" "}
-                            {visible ? formatMoneyValue(value?.value) : "***"}
+                            {visibility
+                              ? formatMoneyValue(value?.value)
+                              : "***"}
                           </CardBoldText>
                           <CardText>
                             {value?.frequency === "unique"

@@ -146,7 +146,6 @@ const Form = ({ navigation, route }) => {
     if (isDisabled()) return;
 
     if (route?.params?.id) {
-      console.log("trying");
       transactionsDB.update({
         title: data?.title,
         category_id: data?.category?.id,

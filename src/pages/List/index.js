@@ -33,19 +33,48 @@ const colors_by_types = {
 const List = ({ navigation }) => {
   const date = useListStore((state) => state.date);
   const filter_date = useListStore((state) => state.filter_date);
+
+  const visibility = useListStore((state) => state.visibility);
+  const toggleVisibility = useListStore((state) => state.toggleVisibility);
+
   const [transactions, setTransactions] = useState([]);
+  const [prevTransactions, setPrevTransactions] = useState([]);
+  const [nextTransactions, setNextTransactions] = useState([]);
 
   const [loading, setLoading] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-      const fetch = async () => {
-        const res = await transactionsDB.listAll({ date: filter_date });
-        setLoading(false);
-        setTransactions(res);
+      const generateFilter = (type, date) => {
+        const next_date = new Date(date);
+        next_date.setDate(1);
+        next_date.setHours(0, 0, 0, 0);
+        if (type === "next") next_date.setMonth(next_date.getMonth() + 1);
+        if (type === "prev") next_date.setMonth(next_date.getMonth() - 1);
+
+        const finalDate = new Date(next_date);
+        finalDate.setMonth(finalDate.getMonth() + 1);
+        finalDate.setDate(0);
+        finalDate.setHours(0, 0, 0, 0);
+
+        return [next_date.getTime(), finalDate.getTime()];
       };
-      setTransactions([]);
-      setLoading(true);
+
+      const fetch = async () => {
+        const next_filter = generateFilter("next", date);
+        const prev_filter = generateFilter("prev", date);
+
+        const res = await Promise.all([
+          transactionsDB.listAll({ date: prev_filter }),
+          transactionsDB.listAll({ date: filter_date }),
+          transactionsDB.listAll({ date: next_filter }),
+        ]);
+        setLoading(false);
+        setPrevTransactions(res[0]);
+        setTransactions(res[1]);
+        setNextTransactions(res[2]);
+      };
+      if (transactions.length === 0) setLoading(true);
       fetch();
     }, [date])
   );
@@ -65,6 +94,18 @@ const List = ({ navigation }) => {
     return acc;
   }, {});
 
+  const handleChange = (next) => {
+    const transactionsCopy = [...transactions];
+    if (next.name === "handlePrev") {
+      setTransactions(prevTransactions);
+      setNextTransactions(transactionsCopy);
+    } else {
+      setTransactions(nextTransactions);
+      setPrevTransactions(transactionsCopy);
+    }
+    next();
+  };
+
   return (
     <Wrapper>
       <Row mb={16} pd={12}>
@@ -79,10 +120,26 @@ const List = ({ navigation }) => {
             {date?.toLocaleString("pt-BR", { month: "short" })}{" "}
             <Bold>{date?.getFullYear()}</Bold>
           </TextTitle>
+          {/* <TouchableOpacity>
+            <IconStore
+              size={22}
+              color="#fafafa"
+              family="Feather"
+              icon="filter"
+            />
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={() => toggleVisibility(visibility)}>
+            <IconStore
+              size={22}
+              color="#fafafa"
+              family="Ionicons"
+              icon={visibility ? "eye-outline" : "eye-off-outline"}
+            />
+          </TouchableOpacity>
         </Row>
       </Row>
 
-      <MonthNav margin />
+      <MonthNav margin onChange={handleChange} />
       <ScrollView style={{ paddingTop: 32 }}>
         <View style={{ gap: 20, paddingBottom: 60 }}>
           {loading && <ActivityIndicator color="#9474ee" />}
@@ -138,7 +195,10 @@ const List = ({ navigation }) => {
                           style={{ marginRight: 4, alignItems: "flex-end" }}
                         >
                           <CardBoldText color={colors_by_types?.[value?.type]}>
-                            R$ {formatMoneyValue(value?.value)}
+                            R${" "}
+                            {visibility
+                              ? formatMoneyValue(value?.value)
+                              : "***"}
                           </CardBoldText>
                           <CardText>
                             {value?.frequency === "unique"
@@ -151,6 +211,27 @@ const List = ({ navigation }) => {
                 </View>
               </View>
             ))}
+          {!loading && (!toMap || Object.keys(toMap)?.length === 0) && (
+            <View
+              style={{
+                flex: 1,
+                paddingVertical: 40,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <IconStore
+                size={24}
+                color="#636161"
+                family="Entypo"
+                icon="emoji-sad"
+              />
+              <CardBoldText color="#636161" style={{ marginTop: 18 }}>
+                nenhuma transação encontrada
+              </CardBoldText>
+              <CardBoldText color="#636161">no período</CardBoldText>
+            </View>
+          )}
         </View>
       </ScrollView>
       <FooterWrapper
@@ -168,14 +249,14 @@ const List = ({ navigation }) => {
           <View />
           <View style={{ alignItems: "center" }}>
             <CardBoldText color={colors_by_types?.receita}>
-              R$ {formatMoneyValue(totalByType?.receita)}
+              R$ {visibility ? formatMoneyValue(totalByType?.receita) : "***"}
             </CardBoldText>
             <CardText>receitas</CardText>
           </View>
           <View />
           <View style={{ alignItems: "center" }}>
             <CardBoldText color={colors_by_types?.despesa}>
-              R$ {formatMoneyValue(totalByType?.despesa)}
+              R$ {visibility ? formatMoneyValue(totalByType?.despesa) : "***"}
             </CardBoldText>
             <CardText>despesas</CardText>
           </View>

@@ -19,7 +19,7 @@ import {
 } from "./styles";
 import IconStore from "../../components/IconStore";
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const [user, setUser] = useState();
   const [name, setName] = useState();
   const [image, setImage] = useState("");
@@ -80,6 +80,8 @@ const Profile = () => {
     if (res) setName(res?.name);
     setButtonText("salvo");
     setUser(res);
+
+    setTimeout(() => navigation?.goBack(), 500);
   };
 
   return (
