@@ -82,7 +82,7 @@ const List = ({ navigation }) => {
         </Row>
       </Row>
 
-      <MonthNav />
+      <MonthNav margin />
       <ScrollView style={{ paddingTop: 32 }}>
         <View style={{ gap: 20, paddingBottom: 60 }}>
           {loading && <ActivityIndicator color="#9474ee" />}

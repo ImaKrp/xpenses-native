@@ -10,6 +10,7 @@ import Calculator from "../pages/Calculator";
 import Profile from "../pages/Profile";
 import Form from "../pages/Form";
 import List from "../pages/List";
+import Home from "../pages/Home";
 import Layout from "../layout";
 
 export function Routes() {
@@ -23,6 +24,13 @@ export function Routes() {
           navigationBarColor: "gold",
         }}
       >
+        <Screen name="Home">
+          {(props) => (
+            <Layout {...props}>
+              <Home {...props} />
+            </Layout>
+          )}
+        </Screen>
         <Screen name="List">
           {(props) => (
             <Layout {...props}>

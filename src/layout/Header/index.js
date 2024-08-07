@@ -62,7 +62,7 @@ const Header = ({ route, navigation }) => {
             <HeaderColumn>
               <HeaderSmallText>Olá</HeaderSmallText>
               <HeaderText>
-                {user?.name !== "" ? user?.name : "Usuário"}
+                {user?.name && user?.name !== "" ? user?.name : "Usuário"}
               </HeaderText>
             </HeaderColumn>
           </>

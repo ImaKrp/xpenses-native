@@ -23,7 +23,7 @@ const Nav = ({ navigation, route }) => {
   }, [bottomDrawerRef]);
   return (
     <NavWrapper>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <IconStore
           icon="home"
           family="MaterialIcons"

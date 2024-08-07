@@ -36,7 +36,7 @@ const MonthNav = ({ margin }) => {
   };
 
   return (
-    <Wrapper margin>
+    <Wrapper margin={margin}>
       <TouchableOpacity onPress={handlePrev}>
         <IconStore
           color="#D0D0D0"
