@@ -99,7 +99,6 @@ const Form = ({ navigation, route }) => {
     }
 
     if (data?.frequency === "recurrent") {
-      console.log("teste", currentDate?.getTime(), data?.recurrent_to);
       if (currentDate?.getTime() > data?.recurrent_to) {
         const newData = { ...data };
         delete newData?.frequency;
@@ -311,7 +310,15 @@ const Form = ({ navigation, route }) => {
             </View>
             <View>
               <Label>categoria</Label>
-              <Picker setValue={handleCategory} value={data?.category} />
+              <Picker
+                setValue={handleCategory}
+                value={{
+                  id: route?.params?.category_id,
+                  color: route?.params?.color,
+                  icon: route?.params?.icon,
+                  icon_type: route?.params?.icon_type,
+                }}
+              />
             </View>
             {!route?.params?.id && (
               <View>

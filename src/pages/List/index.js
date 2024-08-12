@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import MonthNav from "../../components/MonthNav";
 import useListStore from "../../store/list";
 import { useFocusEffect } from "@react-navigation/native";
 import transactionsDB from "../../database/Transactions";
 import IconStore from "../../components/IconStore";
 import { formatMoneyValue } from "../../utils/formatValues";
+import Form from "./FilterForm";
+import BottomDrawer from "react-native-animated-bottom-drawer";
 import {
   View,
   ScrollView,
@@ -23,6 +25,8 @@ import {
   CategoryColor,
   CardText,
   CardBoldText,
+  RelativeTouchable,
+  Indicator,
 } from "./styles";
 
 const colors_by_types = {
@@ -31,17 +35,33 @@ const colors_by_types = {
 };
 
 const List = ({ navigation }) => {
+  const bottomDrawerRef = useRef(null);
+
+  const handleOpenForm = useCallback(() => {
+    if (bottomDrawerRef?.current) bottomDrawerRef.current.open();
+  }, [bottomDrawerRef]);
+
+  const handleCloseForm = useCallback(() => {
+    if (bottomDrawerRef?.current) bottomDrawerRef.current.close();
+  }, [bottomDrawerRef]);
+
   const date = useListStore((state) => state.date);
   const filter_date = useListStore((state) => state.filter_date);
 
   const visibility = useListStore((state) => state.visibility);
   const toggleVisibility = useListStore((state) => state.toggleVisibility);
 
-  const [transactions, setTransactions] = useState([]);
-  const [prevTransactions, setPrevTransactions] = useState([]);
-  const [nextTransactions, setNextTransactions] = useState([]);
+  const setData = useListStore((state) => state.setData);
+  const setPrevData = useListStore((state) => state.setPrevData);
+  const setNextData = useListStore((state) => state.setNextData);
+
+  const data = useListStore((state) => state.data);
+  const prev_data = useListStore((state) => state.prev_data);
+  const next_data = useListStore((state) => state.next_data);
 
   const [loading, setLoading] = useState([]);
+
+  const [filter, setFilter] = useState({});
 
   useFocusEffect(
     useCallback(() => {
@@ -65,27 +85,27 @@ const List = ({ navigation }) => {
         const prev_filter = generateFilter("prev", date);
 
         const res = await Promise.all([
-          transactionsDB.listAll({ date: prev_filter }),
-          transactionsDB.listAll({ date: filter_date }),
-          transactionsDB.listAll({ date: next_filter }),
+          transactionsDB.listAll({ ...filter, date: prev_filter }),
+          transactionsDB.listAll({ ...filter, date: filter_date }),
+          transactionsDB.listAll({ ...filter, date: next_filter }),
         ]);
         setLoading(false);
-        setPrevTransactions(res[0]);
-        setTransactions(res[1]);
-        setNextTransactions(res[2]);
+        setPrevData(res[0]);
+        setData(res[1]);
+        setNextData(res[2]);
       };
-      if (transactions.length === 0) setLoading(true);
+      if (data.length === 0) setLoading(true);
       fetch();
-    }, [date])
+    }, [date, filter])
   );
 
-  const toMap = transactions.reduce((x, y) => {
+  const toMap = data.reduce((x, y) => {
     (x[y.date] = x[y.date] || []).push(y);
 
     return x;
   }, {});
 
-  const totalByType = transactions.reduce((acc, i) => {
+  const totalByType = data.reduce((acc, i) => {
     if (acc[i.type]) {
       acc[i.type] += i.value;
     } else {
@@ -95,13 +115,13 @@ const List = ({ navigation }) => {
   }, {});
 
   const handleChange = (next) => {
-    const transactionsCopy = [...transactions];
+    const transactionsCopy = [...data];
     if (next.name === "handlePrev") {
-      setTransactions(prevTransactions);
-      setNextTransactions(transactionsCopy);
+      setData(prev_data);
+      setNextData(transactionsCopy);
     } else {
-      setTransactions(nextTransactions);
-      setPrevTransactions(transactionsCopy);
+      setData(next_data);
+      setPrevData(transactionsCopy);
     }
     next();
   };
@@ -120,14 +140,15 @@ const List = ({ navigation }) => {
             {date?.toLocaleString("pt-BR", { month: "short" })}{" "}
             <Bold>{date?.getFullYear()}</Bold>
           </TextTitle>
-          {/* <TouchableOpacity>
+          <RelativeTouchable onPress={handleOpenForm}>
+            {(filter?.title || filter?.category_id) && <Indicator />}
             <IconStore
               size={22}
               color="#fafafa"
               family="Feather"
               icon="filter"
             />
-          </TouchableOpacity> */}
+          </RelativeTouchable>
           <TouchableOpacity onPress={() => toggleVisibility(visibility)}>
             <IconStore
               size={22}
@@ -263,6 +284,37 @@ const List = ({ navigation }) => {
           <View />
         </FooterContent>
       </FooterWrapper>
+      <BottomDrawer
+        ref={bottomDrawerRef}
+        snapPoints={[287]}
+        enableSnapping
+        customStyles={{
+          container: {
+            backgroundColor: "#191919",
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            borderRadius: 20,
+          },
+          handle: {
+            backgroundColor: "#2E2E2E",
+            width: 45,
+            height: 5,
+            borderRadius: 10,
+          },
+        }}
+      >
+        <Form
+          values={{ ...filter }}
+          onClose={handleCloseForm}
+          onSubmit={(v) => {
+            setLoading(true);
+            setFilter(v);
+            handleCloseForm();
+          }}
+        />
+      </BottomDrawer>
     </Wrapper>
   );
 };

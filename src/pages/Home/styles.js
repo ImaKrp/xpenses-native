@@ -86,7 +86,7 @@ export const IconColor = styled.View`
   background-color: ${({ color }) => color};
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
+  margin-right: 6px;
 `;
 
 export const CardsColumn = styled.View`

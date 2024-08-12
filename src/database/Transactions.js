@@ -47,8 +47,16 @@ const listAll = async (filter) => {
     query +=
       " AND transactions.date BETWEEN " +
       filter?.date[0] +
-      " and " +
+      " AND " +
       filter?.date[1];
+  }
+
+  if (filter.title) {
+    query += " AND transactions.title LIKE '%" + filter.title + "%'";
+  }
+
+  if (filter.category_id) {
+    query += " AND transactions.category_id=" + filter.category_id;
   }
 
   query += " ORDER BY transactions.date DESC, transactions.title ASC;";

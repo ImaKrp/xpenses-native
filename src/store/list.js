@@ -24,9 +24,17 @@ const useListStore = create((set) => ({
   date: getStartOfCurrMonth(),
   visibility: false,
 
+  data: [],
+  prev_data: [],
+  next_data: [],
+
   toggleVisibility: (visibility) => set({ visibility: !visibility }),
   setFilter: (filter) => set({ filter }),
   setDate: (date) => set({ date, filter_date: dateToFilter(date) }),
+
+  setData: (data) => set({ data }),
+  setPrevData: (prev_data) => set({ prev_data }),
+  setNextData: (next_data) => set({ next_data }),
 }));
 
 export default useListStore;

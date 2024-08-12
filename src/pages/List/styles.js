@@ -66,3 +66,17 @@ export const CardBoldText = styled.Text`
   font-family: Montserrat_600SemiBold;
   color: ${({ color }) => color ?? "#fafafa"};
 `;
+
+export const RelativeTouchable = styled.TouchableOpacity`
+  position: relative;
+`;
+
+export const Indicator = styled.TouchableOpacity`
+  position: absolute;
+  height: 8px;
+  width: 8px;
+  border-radius: 4px;
+  background-color: #9474ee;
+  z-index: 2;
+  right: 0;
+`;

@@ -37,18 +37,25 @@ const List = ({ navigation }) => {
   const filter_date = useListStore((state) => state.filter_date);
   const visibility = useListStore((state) => state.visibility);
   const toggleVisibility = useListStore((state) => state.toggleVisibility);
-  const [transactions, setTransactions] = useState([]);
-  const [nextTransactions, setNextTransactions] = useState([]);
+
+  const setData = useListStore((state) => state.setData);
+  const setPrevData = useListStore((state) => state.setPrevData);
+  const setNextData = useListStore((state) => state.setNextData);
+
+  const data = useListStore((state) => state.data);
+  const prev_data = useListStore((state) => state.prev_data);
+  const next_data = useListStore((state) => state.next_data);
 
   const [loading, setLoading] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-      const generateNextFilter = (date) => {
+      const generateFilter = (type, date) => {
         const next_date = new Date(date);
         next_date.setDate(1);
         next_date.setHours(0, 0, 0, 0);
-        next_date.setMonth(next_date.getMonth() + 1);
+        if (type === "next") next_date.setMonth(next_date.getMonth() + 1);
+        if (type === "prev") next_date.setMonth(next_date.getMonth() - 1);
 
         const finalDate = new Date(next_date);
         finalDate.setMonth(finalDate.getMonth() + 1);
@@ -59,29 +66,32 @@ const List = ({ navigation }) => {
       };
 
       const fetch = async () => {
-        const next_filter = generateNextFilter(date);
+        const next_filter = generateFilter("next", date);
+        const prev_filter = generateFilter("prev", date);
+
         const res = await Promise.all([
+          transactionsDB.listAll({ date: prev_filter }),
           transactionsDB.listAll({ date: filter_date }),
           transactionsDB.listAll({ date: next_filter }),
         ]);
 
         setLoading(false);
-        setTransactions(res[0]);
-        setNextTransactions(res[1]);
+        setPrevData(res[0]);
+        setData(res[1]);
+        setNextData(res[2]);
       };
-      setTransactions([]);
-      setLoading(true);
+      if (data.length === 0) setLoading(true);
       fetch();
     }, [date])
   );
 
-  const toMap = transactions?.slice(0, 3)?.reduce((x, y) => {
+  const toMap = data?.slice(0, 3)?.reduce((x, y) => {
     (x[y.date] = x[y.date] || []).push(y);
 
     return x;
   }, {});
 
-  const totalByType = transactions.reduce(
+  const totalByType = data.reduce(
     (acc, i) => {
       if (acc[i.type]) {
         acc[i.type] += i.value;
@@ -93,7 +103,7 @@ const List = ({ navigation }) => {
     { receita: 0, despesa: 0 }
   );
 
-  const nextMonth = nextTransactions?.reduce(
+  const nextMonth = next_data?.reduce(
     (acc, i) => {
       if (acc[i.type]) {
         acc[i.type] += i.value;
@@ -112,6 +122,20 @@ const List = ({ navigation }) => {
     if (!visibility) return "***";
     if (loading) return "-";
     return formatMoneyValue(value);
+  };
+
+  const handleChange = (next) => {
+    const transactionsCopy = [...data];
+    if (next.name === "handlePrev") {
+      setLoading(true);
+      setData(prev_data);
+      setNextData(transactionsCopy);
+    } else {
+      setLoading(true);
+      setData(next_data);
+      setPrevData(transactionsCopy);
+    }
+    next();
   };
 
   return (
@@ -167,7 +191,7 @@ const List = ({ navigation }) => {
             />
           </TouchableOpacity>
         </BalanceCard>
-        <MonthNav />
+        <MonthNav onChange={handleChange} />
         <CardsColumn>
           <CardsRow>
             <BalanceCard>

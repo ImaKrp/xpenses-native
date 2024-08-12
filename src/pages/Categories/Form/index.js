@@ -94,7 +94,7 @@ const Form = ({ onSubmit }) => {
           })
         }
       >
-        <SubmitText>Salvar</SubmitText>
+        <SubmitText>salvar</SubmitText>
       </SubmitButton>
     </Wrapper>
   );

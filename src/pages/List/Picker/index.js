@@ -52,7 +52,7 @@ const Picker = ({ setValue, value }) => {
   };
 
   return (
-    <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
       <SelectDropdown
         ref={pickerRef}
         data={categories?.sort((a, b) => {
@@ -71,7 +71,7 @@ const Picker = ({ setValue, value }) => {
             <View
               style={{
                 ...styles.dropdown1ButtonStyle,
-                width: windowWidth - 36 - size,
+                width: windowWidth - 24 - size,
               }}
             >
               <View

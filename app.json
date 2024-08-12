@@ -2,7 +2,7 @@
   "expo": {
     "name": "XPENSES",
     "slug": "XPENSES",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,7 +27,7 @@
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",
-      "backgroundColor": "#131313"
+      "backgroundColor": "#101010"
     },
     "web": {
       "favicon": "./assets/favicon.png"
