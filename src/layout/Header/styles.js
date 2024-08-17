@@ -6,12 +6,16 @@ export const Wrapper = styled.View`
 
   padding: ${({ pd }) => (pd ? "12px" : 0)};
   padding-top: ${({ pt }) => `${pt}px`};
+  position: relative;
 `;
 
 export const HeaderWrapper = styled.View`
   padding: 6px 12px 22px;
   flex-direction: row;
   align-items: center;
+  position: ${({ absolute }) => (absolute ? "absolute" : "relative")};
+  top: ${({ pt, absolute }) => absolute && `${pt}px`};
+  z-index: 10;
 `;
 
 export const Menu = styled.TouchableOpacity`
@@ -106,7 +110,6 @@ export const ModalButtonText = styled.Text`
 `;
 
 export const DrawerBlock = styled.TouchableOpacity`
-  width: ${({ w }) => `${w}px`};
   height: 120px;
   border: 1px solid #d0d0d0;
   align-items: center;
@@ -114,6 +117,7 @@ export const DrawerBlock = styled.TouchableOpacity`
   flex-direction: column;
   gap: 0;
   border-radius: 10px;
+  flex: 3;
 `;
 
 export const DrawerBlockText = styled.Text`

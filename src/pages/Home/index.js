@@ -36,8 +36,10 @@ const List = ({ navigation }) => {
   const date = useListStore((state) => state.date);
   const filter_date = useListStore((state) => state.filter_date);
   const visibility = useListStore((state) => state.visibility);
-  const toggleVisibility = useListStore((state) => state.toggleVisibility);
 
+  const toggleVisibility = useListStore(
+    (state) => state.toggleVisibility
+  );
   const setData = useListStore((state) => state.setData);
   const setPrevData = useListStore((state) => state.setPrevData);
   const setNextData = useListStore((state) => state.setNextData);

@@ -10,6 +10,7 @@ import Calculator from "../pages/Calculator";
 import Profile from "../pages/Profile";
 import Form from "../pages/Form";
 import List from "../pages/List";
+import Analysis from "../pages/Analysis";
 import Home from "../pages/Home";
 import Layout from "../layout";
 
@@ -63,6 +64,13 @@ export function Routes() {
           {(props) => (
             <Layout {...props}>
               <Calculator {...props} />
+            </Layout>
+          )}
+        </Screen>
+        <Screen name="Analysis">
+          {(props) => (
+            <Layout {...props}>
+              <Analysis {...props} />
             </Layout>
           )}
         </Screen>

@@ -13,8 +13,12 @@ const Layout = ({ navigation, route, children, ...props }) => {
   return (
     <>
       <Wrapper
-        pt={route?.name !== "Form" ? statusBarHeight : 0}
-        pd={route?.name !== "Form"}
+        pt={
+          route?.name !== "Form" && route?.name !== "Analysis"
+            ? statusBarHeight
+            : 0
+        }
+        pd={route?.name !== "Form" && route?.name !== "Analysis"}
       >
         {shouldShowNav() && <Header navigation={navigation} route={route} />}
         {children}

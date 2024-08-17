@@ -19,6 +19,8 @@ import Feather from "@expo/vector-icons/Feather";
 import usersDB from "../../database/Users";
 import BottomDrawer from "react-native-animated-bottom-drawer";
 import { Dimensions } from "react-native";
+import Constants from "expo-constants";
+const { statusBarHeight } = Constants;
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -45,7 +47,7 @@ const Header = ({ route, navigation }) => {
   );
   return (
     <>
-      <HeaderWrapper>
+      <HeaderWrapper absolute={route?.name === "Analysis"} pt={statusBarHeight}>
         <Menu onPress={handleOpenForm}>
           <Feather name="menu" size={30} color="#fafafa" />
         </Menu>
@@ -117,6 +119,23 @@ const Header = ({ route, navigation }) => {
             <DrawerBlockText mt={6}>minhas</DrawerBlockText>
             <DrawerBlockText>
               <Bold>categorias</Bold>
+            </DrawerBlockText>
+          </DrawerBlock>
+          <DrawerBlock
+            onPress={() => {
+              handleCloseForm();
+              navigation.navigate("Analysis");
+            }}
+          >
+            <IconStore
+              icon="chart-donut"
+              family="MaterialCommunityIcons"
+              color="#fafafa"
+              size={32}
+            />
+            <DrawerBlockText mt={6}>minha</DrawerBlockText>
+            <DrawerBlockText>
+              <Bold>análise</Bold>
             </DrawerBlockText>
           </DrawerBlock>
         </DrawerWrapper>

@@ -56,7 +56,11 @@ const listAll = async (filter) => {
   }
 
   if (filter.category_id) {
-    query += " AND transactions.category_id=" + filter.category_id;
+    query += " AND transactions.category_id = " + filter.category_id;
+  }
+
+  if (filter.type) {
+    query += " AND transactions.type = '" + filter.type + "'";
   }
 
   query += " ORDER BY transactions.date DESC, transactions.title ASC;";
