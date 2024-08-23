@@ -3,7 +3,7 @@ import db from "./SQLiteDB";
 // db.execSync("DROP TABLE transactions;");
 
 db.execSync(`
-  PRAGMA foreign_keys = ON;CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, category_id INTEGER DEFAULT 7, value REAL, date INTEGER, frequency TEXT, type TEXT, FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE SET DEFAULT);
+  PRAGMA foreign_keys = ON;CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, category_id INTEGER, value REAL, date INTEGER, frequency TEXT, type TEXT, FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE SET NULL);
 `);
 
 const create = async (data) => {
@@ -40,27 +40,52 @@ const deleteTransaction = async (id) => {
 };
 
 const listAll = async (filter) => {
-  let query =
-    "SELECT transactions.*, categories.name, categories.icon, categories.icon_type, categories.color  FROM transactions, categories WHERE categories.id=transactions.category_id";
+  let query = `SELECT 
+    transactions.*, 
+    categories.name, 
+    categories.icon, 
+    categories.icon_type, 
+    categories.color  
+    FROM 
+        transactions
+    LEFT JOIN 
+        categories 
+    ON 
+    transactions.category_id = categories.id`;
+
+  if (Object.keys(filter).length > 0) query += " WHERE ";
+
+  let hasSetFilter = false;
 
   if (filter?.date) {
+    if (hasSetFilter) query += " AND ";
     query +=
-      " AND transactions.date BETWEEN " +
+      "transactions.date BETWEEN " +
       filter?.date[0] +
       " AND " +
       filter?.date[1];
+    hasSetFilter = true;
   }
 
   if (filter.title) {
-    query += " AND transactions.title LIKE '%" + filter.title + "%'";
+    if (hasSetFilter) query += " AND ";
+    query += "transactions.title LIKE '%" + filter.title + "%'";
+    hasSetFilter = true;
   }
 
   if (filter.category_id) {
-    query += " AND transactions.category_id = " + filter.category_id;
+    if (hasSetFilter) query += " AND ";
+    query += "transactions.category_id = " + filter.category_id;
+    if (filter.category?.name === "outros") {
+      query += " OR transactions.category_id IS NULL";
+    }
+    hasSetFilter = true;
   }
 
   if (filter.type) {
-    query += " AND transactions.type = '" + filter.type + "'";
+    if (hasSetFilter) query += " AND ";
+    query += "transactions.type = '" + filter.type + "'";
+    hasSetFilter = true;
   }
 
   query += " ORDER BY transactions.date DESC, transactions.title ASC;";

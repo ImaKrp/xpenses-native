@@ -55,7 +55,12 @@ const Form = ({ navigation, route }) => {
     if (route?.params?.id) {
       const { category_id, color, icon, icon_type } = route?.params;
       const { date, frequency, id, name, title } = route?.params;
-      const category = { id: category_id, color, icon, icon_type };
+      const category = category_id && {
+        id: category_id,
+        color,
+        icon,
+        icon_type,
+      };
 
       let newData = {
         category,

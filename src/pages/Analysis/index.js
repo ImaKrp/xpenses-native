@@ -32,8 +32,6 @@ import {
 
 const { statusBarHeight } = Constants;
 
-const windowWidth = Dimensions.get("window").width;
-
 const colors_by_types = {
   despesa: "#E5405E",
   receita: "#03DAC6",
@@ -46,6 +44,7 @@ const RenderLegendComponent = ({ data }) => {
         flex: 1,
         gap: 8,
         paddingHorizontal: 20,
+        justifyContent: "flex-start",
       }}
     >
       {data &&
@@ -56,7 +55,6 @@ const RenderLegendComponent = ({ data }) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              flex: 1,
             }}
           >
             <CategoryColor color={value?.color}>
@@ -143,16 +141,26 @@ const Analysis = ({ navigation }) => {
   let totalSum = 0;
 
   const totalByCategory = data.reduce((acc, i) => {
+    if (i?.name === null) i.name = "outros";
     if (acc[i.name]) {
       acc[i.name].value += i.value;
     } else {
-      acc[i.name] = {
-        name: i.name,
-        value: i.value,
-        icon: i.icon,
-        icon_type: i.icon_type,
-        color: i.color,
-      };
+      if (i?.name === "outros")
+        acc[i.name] = {
+          name: i.name,
+          value: i.value,
+          icon: "dots-horizontal",
+          icon_type: "MaterialCommunityIcons",
+          color: "#6F6F6F",
+        };
+      else
+        acc[i.name] = {
+          name: i.name,
+          value: i.value,
+          icon: i.icon,
+          icon_type: i.icon_type,
+          color: i.color,
+        };
     }
     totalSum += i.value;
     return acc;

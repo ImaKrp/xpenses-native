@@ -37,9 +37,7 @@ const List = ({ navigation }) => {
   const filter_date = useListStore((state) => state.filter_date);
   const visibility = useListStore((state) => state.visibility);
 
-  const toggleVisibility = useListStore(
-    (state) => state.toggleVisibility
-  );
+  const toggleVisibility = useListStore((state) => state.toggleVisibility);
   const setData = useListStore((state) => state.setData);
   const setPrevData = useListStore((state) => state.setPrevData);
   const setNextData = useListStore((state) => state.setNextData);
@@ -87,13 +85,21 @@ const List = ({ navigation }) => {
     }, [date])
   );
 
-  const toMap = data?.slice(0, 3)?.reduce((x, y) => {
+  const filteredData = data?.filter((i) => {
+    const currentTime = new Date().getTime();
+    const itemTime = new Date(i.date).getTime();
+    if (filter_date[0] <= currentTime && filter_date[1] > currentTime)
+      return itemTime <= currentTime;
+    return true;
+  });
+
+  const toMap = filteredData?.slice(0, 3)?.reduce((x, y) => {
     (x[y.date] = x[y.date] || []).push(y);
 
     return x;
   }, {});
 
-  const totalByType = data.reduce(
+  const totalByType = filteredData.reduce(
     (acc, i) => {
       if (acc[i.type]) {
         acc[i.type] += i.value;
@@ -105,7 +111,12 @@ const List = ({ navigation }) => {
     { receita: 0, despesa: 0 }
   );
 
-  const nextMonth = next_data?.reduce(
+  const remainingItems = data?.reduce((acc, i) => {
+    if (!filteredData?.includes(i)) acc.push(i);
+    return acc;
+  }, []);
+
+  const nextMonth = remainingItems?.reduce(
     (acc, i) => {
       if (acc[i.type]) {
         acc[i.type] += i.value;
@@ -369,17 +380,19 @@ const List = ({ navigation }) => {
                             alignItems: "center",
                           }}
                         >
-                          <CategoryColor color={value?.color}>
+                          <CategoryColor color={value?.color ?? "#6F6F6F"}>
                             <IconStore
                               size={24}
                               color="#fafafa"
-                              family={value?.icon_type}
-                              icon={value?.icon}
+                              family={
+                                value?.icon_type ?? "MaterialCommunityIcons"
+                              }
+                              icon={value?.icon ?? "dots-horizontal"}
                             />
                           </CategoryColor>
                           <View style={{ marginLeft: 12 }}>
                             <CardBoldText>{value?.title}</CardBoldText>
-                            <CardText>{value?.name}</CardText>
+                            <CardText>{value?.name ?? "outros"}</CardText>
                           </View>
                         </View>
                         <View

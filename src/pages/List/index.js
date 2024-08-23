@@ -198,17 +198,19 @@ const List = ({ navigation }) => {
                         <View
                           style={{ flexDirection: "row", alignItems: "center" }}
                         >
-                          <CategoryColor color={value?.color}>
+                          <CategoryColor color={value?.color ?? "#6F6F6F"}>
                             <IconStore
                               size={24}
                               color="#fafafa"
-                              family={value?.icon_type}
-                              icon={value?.icon}
+                              family={
+                                value?.icon_type ?? "MaterialCommunityIcons"
+                              }
+                              icon={value?.icon ?? "dots-horizontal"}
                             />
                           </CategoryColor>
                           <View style={{ marginLeft: 12 }}>
                             <CardBoldText>{value?.title}</CardBoldText>
-                            <CardText>{value?.name}</CardText>
+                            <CardText>{value?.name ?? "outros"}</CardText>
                           </View>
                         </View>
                         <View

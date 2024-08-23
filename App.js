@@ -10,6 +10,7 @@ import {
 
 import * as SplashScreen from "expo-splash-screen";
 import { Routes } from "./src/routes";
+import schemaDB from "./src/database/Schema";
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -21,9 +22,15 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
+    const asyncRemoveSplase = async () => {
+      const res = await schemaDB.checkNrun();
+      console.log(res);
+      if (res === true && (loaded || error)) {
+        SplashScreen.hideAsync();
+      }
+    };
+
+    asyncRemoveSplase();
   }, [loaded, error]);
 
   if (!loaded && !error) {

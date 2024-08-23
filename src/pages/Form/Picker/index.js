@@ -12,7 +12,6 @@ const windowWidth = Dimensions.get("window").width;
 
 const Picker = ({ setValue, value }) => {
   const [categories, setCategories] = useState([]);
-
   const [hasSetValue, setHasSetValue] = useState(!!value?.id);
 
   useEffect(() => {

@@ -80,7 +80,9 @@ const Form = ({ values, onSubmit, onClose }) => {
         <Label>categoria</Label>
         <Picker
           value={{ id: data?.category_id }}
-          setValue={(v) => setData({ ...data, category_id: v?.id })}
+          setValue={(v) =>
+            setData({ ...data, category_id: v?.id, category: v })
+          }
         />
       </View>
       <Row>

@@ -113,7 +113,7 @@ export const icons = [
     icon_type: "FontAwesome5",
   },
   {
-    icon: "gift-sharp",
+    icon: "shirt-sharp",
     icon_type: "Ionicons",
   },
   {
