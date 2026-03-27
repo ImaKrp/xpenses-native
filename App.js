@@ -24,7 +24,6 @@ export default function App() {
   useEffect(() => {
     const asyncRemoveSplase = async () => {
       const res = await schemaDB.checkNrun();
-      console.log(res);
       if (res === true && (loaded || error)) {
         SplashScreen.hideAsync();
       }

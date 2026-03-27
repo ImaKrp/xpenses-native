@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useMemo } from "react";
 import MonthNav from "../../components/MonthNav";
 import useListStore from "../../store/list";
 import { useFocusEffect } from "@react-navigation/native";
@@ -58,7 +58,7 @@ const List = ({ navigation }) => {
   const prev_data = useListStore((state) => state.prev_data);
   const next_data = useListStore((state) => state.next_data);
 
-  const [loading, setLoading] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [filter, setFilter] = useState({});
 
@@ -98,20 +98,23 @@ const List = ({ navigation }) => {
     }, [date, filter])
   );
 
-  const toMap = data.reduce((x, y) => {
-    (x[y.date] = x[y.date] || []).push(y);
+  const { toMap, totalByType } = useMemo(() => {
+    const toMap = data.reduce((x, y) => {
+      (x[y.date] = x[y.date] || []).push(y);
+      return x;
+    }, {});
 
-    return x;
-  }, {});
+    const totalByType = data.reduce((acc, i) => {
+      if (acc[i.type]) {
+        acc[i.type] += i.value;
+      } else {
+        acc[i.type] = i.value;
+      }
+      return acc;
+    }, {});
 
-  const totalByType = data.reduce((acc, i) => {
-    if (acc[i.type]) {
-      acc[i.type] += i.value;
-    } else {
-      acc[i.type] = i.value;
-    }
-    return acc;
-  }, {});
+    return { toMap, totalByType };
+  }, [data]);
 
   const handleChange = (next) => {
     const transactionsCopy = [...data];

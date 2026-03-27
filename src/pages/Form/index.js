@@ -181,7 +181,7 @@ const Form = ({ navigation, route }) => {
       if (startDate.getFullYear() < endDate.getFullYear())
         monthDiff += (endDate.getFullYear() - startDate.getFullYear()) * 12;
 
-      let loopDate = startDate;
+      let loopDate = new Date(startDate);
 
       for (let i = 0; i < monthDiff - 1; i++) {
         loopDate.setMonth(loopDate.getMonth() + 1);

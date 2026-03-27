@@ -138,42 +138,46 @@ const Analysis = ({ navigation }) => {
     }, [date, type])
   );
 
-  let totalSum = 0;
+  const { totalSum, mappedData } = useMemo(() => {
+    let totalSum = 0;
 
-  const totalByCategory = data.reduce((acc, i) => {
-    if (i?.name === null) i.name = "outros";
-    if (acc[i.name]) {
-      acc[i.name].value += i.value;
-    } else {
-      if (i?.name === "outros")
-        acc[i.name] = {
-          name: i.name,
-          value: i.value,
-          icon: "dots-horizontal",
-          icon_type: "MaterialCommunityIcons",
-          color: "#6F6F6F",
-        };
-      else
-        acc[i.name] = {
-          name: i.name,
-          value: i.value,
-          icon: i.icon,
-          icon_type: i.icon_type,
-          color: i.color,
-        };
-    }
-    totalSum += i.value;
-    return acc;
-  }, {});
+    const totalByCategory = data.reduce((acc, i) => {
+      if (i?.name === null) i.name = "outros";
+      if (acc[i.name]) {
+        acc[i.name].value += i.value;
+      } else {
+        if (i?.name === "outros")
+          acc[i.name] = {
+            name: i.name,
+            value: i.value,
+            icon: "dots-horizontal",
+            icon_type: "MaterialCommunityIcons",
+            color: "#6F6F6F",
+          };
+        else
+          acc[i.name] = {
+            name: i.name,
+            value: i.value,
+            icon: i.icon,
+            icon_type: i.icon_type,
+            color: i.color,
+          };
+      }
+      totalSum += i.value;
+      return acc;
+    }, {});
 
-  const mappedData = Object.values(totalByCategory)
-    ?.sort((a, b) => b.value - a.value)
-    ?.filter((item) => item.value > 0)
-    ?.map((item) => {
-      let percent = (item.value * 100) / totalSum;
-      percent = Number(percent.toFixed(3));
-      return { ...item, percent };
-    });
+    const mappedData = Object.values(totalByCategory)
+      ?.sort((a, b) => b.value - a.value)
+      ?.filter((item) => item.value >= 0)
+      ?.map((item) => {
+        let percent = totalSum > 0 ? (item.value * 100) / totalSum : 0;
+        percent = Number(percent.toFixed(3));
+        return { ...item, percent };
+      });
+
+    return { totalSum, mappedData };
+  }, [data]);
 
   const toMap = useMemo(() => {
     const shoudMapTopFive = () => {
@@ -199,10 +203,10 @@ const Analysis = ({ navigation }) => {
         }
       );
 
-      let percent = (othersValue.value * 100) / totalSum;
+      let percent = totalSum > 0 ? (othersValue.value * 100) / totalSum : 0;
       percent = Number(percent.toFixed(3));
 
-      othersWithPerformance = {
+      const othersWithPerformance = {
         ...othersValue,
         percent,
       };
@@ -260,7 +264,7 @@ const Analysis = ({ navigation }) => {
           <View style={{ paddingTop: 32 }}>
             <View style={{ gap: 10, paddingBottom: 24, paddingHorizontal: 8 }}>
               {loading && <ActivityIndicator color="#9474ee" />}
-              {!loading && (!toMap || toMap?.length === 0) && (
+              {!loading && (!data || data?.length === 0) && (
                 <View
                   style={{
                     flex: 1,

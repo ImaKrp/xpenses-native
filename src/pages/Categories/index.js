@@ -57,20 +57,6 @@ const Categories = ({ navigation }) => {
   const handleSubmit = async (data) => {
     await categoriesDB.create(data);
     handleCloseForm();
-    setCustomCategories([
-      ...customCategories,
-      {
-        ...data,
-        id:
-          customCategories?.length > 0
-            ? Number(
-                customCategories
-                  ?.sort((a, b) => Number(b?.id) - Number(a?.id))
-                  ?.at(-1)?.id
-              ) + 1
-            : 1,
-      },
-    ]);
     fetchCustom();
   };
 

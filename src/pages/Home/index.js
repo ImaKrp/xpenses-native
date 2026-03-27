@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import MonthNav from "../../components/MonthNav";
 import useListStore from "../../store/list";
 import { useFocusEffect } from "@react-navigation/native";
@@ -85,51 +85,65 @@ const List = ({ navigation }) => {
     }, [date])
   );
 
-  const filteredData = data?.filter((i) => {
+  const {
+    filteredData,
+    toMap,
+    totalByType,
+    remainingItems,
+    nextMonth,
+    balance,
+    projected,
+  } = useMemo(() => {
     const currentTime = new Date().getTime();
-    const itemTime = new Date(i.date).getTime();
-    if (filter_date[0] <= currentTime && filter_date[1] > currentTime)
-      return itemTime <= currentTime;
-    return true;
-  });
 
-  const toMap = filteredData?.slice(0, 3)?.reduce((x, y) => {
-    (x[y.date] = x[y.date] || []).push(y);
+    const filteredData = data?.filter((i) => {
+      const itemTime = new Date(i.date).getTime();
+      if (filter_date[0] <= currentTime && filter_date[1] > currentTime)
+        return itemTime <= currentTime;
+      return true;
+    });
 
-    return x;
-  }, {});
+    const toMap = filteredData?.slice(0, 3)?.reduce((x, y) => {
+      (x[y.date] = x[y.date] || []).push(y);
+      return x;
+    }, {});
 
-  const totalByType = filteredData.reduce(
-    (acc, i) => {
-      if (acc[i.type]) {
-        acc[i.type] += i.value;
-      } else {
-        acc[i.type] = i.value;
-      }
-      return acc;
-    },
-    { receita: 0, despesa: 0 }
-  );
+    const totalByType = filteredData?.reduce(
+      (acc, i) => {
+        if (acc[i.type]) {
+          acc[i.type] += i.value;
+        } else {
+          acc[i.type] = i.value;
+        }
+        return acc;
+      },
+      { receita: 0, despesa: 0 }
+    );
 
-  const remainingItems = data?.reduce((acc, i) => {
-    if (!filteredData?.includes(i)) acc.push(i);
-    return acc;
-  }, []);
+    const remainingItems = data?.filter((i) => {
+      const itemTime = new Date(i.date).getTime();
+      if (filter_date[0] <= currentTime && filter_date[1] > currentTime)
+        return itemTime > currentTime;
+      return false;
+    });
 
-  const nextMonth = remainingItems?.reduce(
-    (acc, i) => {
-      if (acc[i.type]) {
-        acc[i.type] += i.value;
-      } else {
-        acc[i.type] = i.value;
-      }
-      return acc;
-    },
-    { receita: 0, despesa: 0 }
-  );
+    const nextMonth = remainingItems?.reduce(
+      (acc, i) => {
+        if (acc[i.type]) {
+          acc[i.type] += i.value;
+        } else {
+          acc[i.type] = i.value;
+        }
+        return acc;
+      },
+      { receita: 0, despesa: 0 }
+    );
 
-  const balance = (totalByType?.receita ?? 0) - (totalByType?.despesa ?? 0);
-  const projected = balance + (nextMonth?.receita - nextMonth?.despesa);
+    const balance = (totalByType?.receita ?? 0) - (totalByType?.despesa ?? 0);
+    const projected = balance + (nextMonth?.receita - nextMonth?.despesa);
+
+    return { filteredData, toMap, totalByType, remainingItems, nextMonth, balance, projected };
+  }, [data, filter_date]);
 
   const showValue = (value) => {
     if (!visibility) return "***";

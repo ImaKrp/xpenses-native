@@ -53,44 +53,49 @@ const listAll = async (filter) => {
     ON 
     transactions.category_id = categories.id`;
 
-  if (Object.keys(filter).length > 0) query += " WHERE ";
-
   let hasSetFilter = false;
+  const args = [];
+
+  const addWhereClause = () => {
+    if (!hasSetFilter) {
+      query += " WHERE ";
+      hasSetFilter = true;
+    } else {
+      query += " AND ";
+    }
+  };
 
   if (filter?.date) {
-    if (hasSetFilter) query += " AND ";
-    query +=
-      "transactions.date BETWEEN " +
-      filter?.date[0] +
-      " AND " +
-      filter?.date[1];
-    hasSetFilter = true;
+    addWhereClause();
+    query += "transactions.date BETWEEN ? AND ?";
+    args.push(filter.date[0], filter.date[1]);
   }
 
   if (filter.title) {
-    if (hasSetFilter) query += " AND ";
-    query += "transactions.title LIKE '%" + filter.title + "%'";
-    hasSetFilter = true;
+    addWhereClause();
+    query += "transactions.title LIKE ?";
+    args.push(`%${filter.title}%`);
   }
 
   if (filter.category_id) {
-    if (hasSetFilter) query += " AND ";
-    query += "transactions.category_id = " + filter.category_id;
+    addWhereClause();
     if (filter.category?.name === "outros") {
-      query += " OR transactions.category_id IS NULL";
+      query += "(transactions.category_id = ? OR transactions.category_id IS NULL)";
+    } else {
+      query += "transactions.category_id = ?";
     }
-    hasSetFilter = true;
+    args.push(filter.category_id);
   }
 
   if (filter.type) {
-    if (hasSetFilter) query += " AND ";
-    query += "transactions.type = '" + filter.type + "'";
-    hasSetFilter = true;
+    addWhereClause();
+    query += "transactions.type = ?";
+    args.push(filter.type);
   }
 
   query += " ORDER BY transactions.date DESC, transactions.title ASC;";
 
-  const allRows = await db.getAllAsync(query);
+  const allRows = await db.getAllAsync(query, args);
   return allRows;
 };
 

@@ -34,11 +34,14 @@ const deleteCategory = async (id) => {
 
 const listAll = async (filter) => {
   let query = "SELECT * FROM categories";
+  const args = [];
+
   if (filter?.search) {
-    query += " WHERE name LIKE '%" + filter.search + "%'";
+    query += " WHERE name LIKE ?";
+    args.push(`%${filter.search}%`);
   }
 
-  const allRows = await db.getAllAsync(query);
+  const allRows = await db.getAllAsync(query, args);
   return allRows;
 };
 

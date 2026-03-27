@@ -1,5 +1,4 @@
 import db from "./SQLiteDB";
-import { categories } from "../utils/categories";
 
 // db.execSync("DROP TABLE users;");
 
