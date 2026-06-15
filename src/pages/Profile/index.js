@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import usersDB from "../../database/Users";
 import Input from "../../components/Input";
 import { View } from "react-native";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { useFocusEffect } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -45,7 +45,7 @@ const Profile = ({ navigation }) => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ["images", "videos"],
       allowsEditing: true,
       quality: 1,
     });

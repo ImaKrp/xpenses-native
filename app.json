@@ -13,7 +13,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -22,7 +24,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#191919"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
       "package": "com.imakreep.XPENSES"
     },
     "androidNavigationBar": {
@@ -50,7 +54,8 @@
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photo",
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "extra": {
       "eas": {
